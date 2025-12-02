@@ -196,33 +196,158 @@ def get_user(
 @router.post("/", response_model=schemas.UserResponse, summary="创建用户（管理员）")
 def create_user(
     user: schemas.UserCreate,
+    request: Request,
     current_user: models.User = Depends(require_admin),
     db: Session = Depends(get_db)
 ):
-    """创建新用户（仅管理员）"""
-    # 检查用户名是否已存在
-    if crud_user.get_user_by_username(db, user.username):
-        raise HTTPException(status_code=400, detail="用户名已存在")
+    """创建新用户（仅管理员，含密码策略验证和审计日志）"""
+    timer = Timer()
+    timer.start()
     
-    # 检查邮箱是否已存在
-    if user.email and crud_user.get_user_by_email(db, user.email):
-        raise HTTPException(status_code=400, detail="邮箱已被使用")
-    
-    return crud_user.create_user(db, user)
+    try:
+        # 检查用户名是否已存在
+        if crud_user.get_user_by_username(db, user.username):
+            AuditLogger.log_operation(
+                db=db,
+                user_id=current_user.id,
+                username=current_user.username,
+                operation="创建用户失败",
+                module="user",
+                request=request,
+                details={"username": user.username, "reason": "用户名已存在"},
+                status="FAILED",
+                error_msg="用户名已存在",
+                duration=timer.elapsed_ms()
+            )
+            raise HTTPException(status_code=400, detail="用户名已存在")
+        
+        # 检查邮箱是否已存在
+        if user.email and crud_user.get_user_by_email(db, user.email):
+            AuditLogger.log_operation(
+                db=db,
+                user_id=current_user.id,
+                username=current_user.username,
+                operation="创建用户失败",
+                module="user",
+                request=request,
+                details={"username": user.username, "email": user.email, "reason": "邮箱已被使用"},
+                status="FAILED",
+                error_msg="邮箱已被使用",
+                duration=timer.elapsed_ms()
+            )
+            raise HTTPException(status_code=400, detail="邮箱已被使用")
+        
+        # 验证密码强度
+        is_valid, error_msg = PasswordPolicy.validate_password_strength(user.password)
+        if not is_valid:
+            AuditLogger.log_operation(
+                db=db,
+                user_id=current_user.id,
+                username=current_user.username,
+                operation="创建用户失败",
+                module="user",
+                request=request,
+                details={"username": user.username, "reason": f"密码强度不符合要求：{error_msg}"},
+                status="FAILED",
+                error_msg=f"密码强度不符合要求：{error_msg}",
+                duration=timer.elapsed_ms()
+            )
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"密码强度不符合要求：{error_msg}"
+            )
+        
+        # 创建用户
+        new_user = crud_user.create_user(db, user)
+        
+        # 记录审计日志
+        AuditLogger.log_create(
+            db=db,
+            user_id=current_user.id,
+            username=current_user.username,
+            module="user",
+            resource_type="用户",
+            resource_id=new_user.id,
+            request=request,
+            data={
+                "username": user.username,
+                "name": user.name,
+                "role": user.role,
+                "email": user.email
+            }
+        )
+        
+        return new_user
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        AuditLogger.log_operation(
+            db=db,
+            user_id=current_user.id,
+            username=current_user.username,
+            operation="创建用户异常",
+            module="user",
+            request=request,
+            details={"username": user.username},
+            status="FAILED",
+            error_msg=str(e),
+            duration=timer.elapsed_ms()
+        )
+        raise
 
 
 @router.put("/{user_id}", response_model=schemas.UserResponse, summary="更新用户（管理员）")
 def update_user(
     user_id: int,
     user_update: schemas.UserUpdate,
+    request: Request,
     current_user: models.User = Depends(require_admin),
     db: Session = Depends(get_db)
 ):
-    """更新用户信息（仅管理员）"""
-    updated_user = crud_user.update_user(db, user_id, user_update)
-    if not updated_user:
-        raise HTTPException(status_code=404, detail="用户不存在")
-    return updated_user
+    """更新用户信息（仅管理员，含审计日志）"""
+    timer = Timer()
+    timer.start()
+    
+    try:
+        # 收集变更
+        changes = user_update.model_dump(exclude_unset=True)
+        
+        # 更新用户
+        updated_user = crud_user.update_user(db, user_id, user_update)
+        if not updated_user:
+            raise HTTPException(status_code=404, detail="用户不存在")
+        
+        # 记录审计日志
+        AuditLogger.log_update(
+            db=db,
+            user_id=current_user.id,
+            username=current_user.username,
+            module="user",
+            resource_type="用户",
+            resource_id=user_id,
+            request=request,
+            changes=changes
+        )
+        
+        return updated_user
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        AuditLogger.log_operation(
+            db=db,
+            user_id=current_user.id,
+            username=current_user.username,
+            operation="更新用户失败",
+            module="user",
+            request=request,
+            details={"user_id": user_id},
+            status="FAILED",
+            error_msg=str(e),
+            duration=timer.elapsed_ms()
+        )
+        raise
 
 
 @router.delete("/{user_id}", summary="删除用户（管理员）")

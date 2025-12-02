@@ -17,29 +17,11 @@
       >
         <template v-for="route in menuRoutes" :key="route.path">
           <el-menu-item
-            v-if="!route.children && !route.meta.hidden"
-            :index="route.path"
+            :index="'/' + route.path"
           >
             <el-icon><component :is="route.meta.icon" /></el-icon>
             <template #title>{{ route.meta.title }}</template>
           </el-menu-item>
-          
-          <el-sub-menu
-            v-else-if="route.children && !route.meta.hidden"
-            :index="route.path"
-          >
-            <template #title>
-              <el-icon><component :is="route.meta.icon" /></el-icon>
-              <span>{{ route.meta.title }}</span>
-            </template>
-            <el-menu-item
-              v-for="child in route.children"
-              :key="child.path"
-              :index="`${route.path}/${child.path}`"
-            >
-              {{ child.meta.title }}
-            </el-menu-item>
-          </el-sub-menu>
         </template>
       </el-menu>
     </el-aside>

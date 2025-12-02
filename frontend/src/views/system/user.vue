@@ -35,19 +35,19 @@
       stripe
       style="width: 100%"
     >
-      <el-table-column prop="id" label="ID" width="80" />
+      <el-table-column prop="id" label="ID" width="60" />
       <el-table-column prop="username" label="用户名" width="120" />
       <el-table-column prop="name" label="姓名" width="100" />
-      <el-table-column prop="role" label="角色" width="100">
+      <el-table-column prop="role" label="角色" width="110">
         <template #default="{ row }">
           <el-tag :type="getRoleType(row.role)">{{ row.role }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="title" label="职称" width="120" />
-      <el-table-column prop="college" label="学院" width="150" show-overflow-tooltip />
-      <el-table-column prop="email" label="邮箱" width="180" show-overflow-tooltip />
+      <el-table-column prop="title" label="职称" width="100" />
+      <el-table-column prop="college" label="学院" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="email" label="邮箱" min-width="180" show-overflow-tooltip />
       <el-table-column prop="phone" label="电话" width="120" />
-      <el-table-column prop="created_at" label="创建时间" width="180">
+      <el-table-column prop="created_at" label="创建时间" width="160">
         <template #default="{ row }">
           {{ formatDate(row.created_at) }}
         </template>
@@ -288,12 +288,12 @@ const loadUserList = async () => {
     }
     
     const res = await getUserList(params)
-    tableData.value = res.data
-    // 注意：如果后端支持总数，则使用 res.total
-    // pagination.total = res.total
-    pagination.total = res.data.length
+    // 后端直接返回数组，不需要 .data
+    tableData.value = res
+    pagination.total = res.length
   } catch (error) {
-    ElMessage.error('加载用户列表失败')
+    console.error('加载用户列表失败:', error)
+    ElMessage.error(error.response?.data?.detail || '加载用户列表失败')
   } finally {
     loading.value = false
   }

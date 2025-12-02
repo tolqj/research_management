@@ -1,116 +1,165 @@
 <template>
-  <el-card>
-    <template #header>
-      <div class="card-header">
-        <span>个人信息</span>
-      </div>
-    </template>
-    
-    <!-- 基本信息 -->
-    <el-form
-      ref="userFormRef"
-      :model="userInfo"
-      :rules="userRules"
-      label-width="100px"
-      style="max-width: 600px"
-    >
-      <el-form-item label="用户名" prop="username">
-        <el-input v-model="userInfo.username" disabled />
-      </el-form-item>
-      <el-form-item label="姓名" prop="name">
-        <el-input v-model="userInfo.name" placeholder="请输入姓名" />
-      </el-form-item>
-      <el-form-item label="角色">
-        <el-tag :type="getRoleType(userInfo.role)">{{ userInfo.role }}</el-tag>
-      </el-form-item>
-      <el-form-item label="职称" prop="title">
-        <el-input v-model="userInfo.title" placeholder="如：教授、副教授" />
-      </el-form-item>
-      <el-form-item label="学院" prop="college">
-        <el-input v-model="userInfo.college" placeholder="请输入学院" />
-      </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="userInfo.email" placeholder="请输入邮箱" />
-      </el-form-item>
-      <el-form-item label="电话" prop="phone">
-        <el-input v-model="userInfo.phone" placeholder="请输入电话" />
-      </el-form-item>
-      <el-form-item label="研究方向" prop="research_field">
-        <el-input
-          v-model="userInfo.research_field"
-          type="textarea"
-          :rows="3"
-          placeholder="请输入研究方向"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="handleSave" :loading="saving">保存信息</el-button>
-        <el-button @click="resetUserForm">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-divider />
-    
-    <!-- 修改密码 -->
-    <h3 style="margin-bottom: 20px">修改密码</h3>
-    <el-alert
-      title="密码要求"
-      type="info"
-      :closable="false"
-      style="max-width: 600px; margin-bottom: 20px"
-    >
-      <p style="margin: 5px 0">• 长度至少 8 位</p>
-      <p style="margin: 5px 0">• 必须包含大写字母、小写字母、数字和特殊字符</p>
-      <p style="margin: 5px 0">• 建议每 90 天更换一次密码</p>
-    </el-alert>
-    
-    <el-form
-      ref="passwordFormRef"
-      :model="passwordForm"
-      :rules="passwordRules"
-      label-width="100px"
-      style="max-width: 600px"
-    >
-      <el-form-item label="旧密码" prop="old_password">
-        <el-input
-          v-model="passwordForm.old_password"
-          type="password"
-          show-password
-          placeholder="请输入旧密码"
-        />
-      </el-form-item>
-      <el-form-item label="新密码" prop="new_password">
-        <el-input
-          v-model="passwordForm.new_password"
-          type="password"
-          show-password
-          placeholder="请输入新密码"
-          @input="checkPasswordStrength"
-        />
-        <div v-if="passwordForm.new_password" style="margin-top: 8px">
-          <el-progress
-            :percentage="passwordStrength.percentage"
-            :color="passwordStrength.color"
-            :format="() => passwordStrength.text"
-          />
+  <div class="profile-container">
+    <!-- 基本信息卡片 -->
+    <el-card class="info-card">
+      <template #header>
+        <div class="card-header">
+          <span class="card-title">基本信息</span>
         </div>
-      </el-form-item>
-      <el-form-item label="确认密码" prop="confirm_password">
-        <el-input
-          v-model="passwordForm.confirm_password"
-          type="password"
-          show-password
-          placeholder="请再次输入新密码"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="handleChangePassword" :loading="changingPassword">
-          修改密码
-        </el-button>
-        <el-button @click="resetPasswordForm">重置</el-button>
-      </el-form-item>
-    </el-form>
-  </el-card>
+      </template>
+      
+      <el-form
+        ref="userFormRef"
+        :model="userInfo"
+        :rules="userRules"
+        label-width="100px"
+        class="user-form"
+      >
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="用户名" prop="username">
+              <el-input v-model="userInfo.username" disabled />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="姓名" prop="name">
+              <el-input v-model="userInfo.name" placeholder="请输入姓名" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="角色">
+              <el-tag :type="getRoleType(userInfo.role)">{{ userInfo.role }}</el-tag>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="职称" prop="title">
+              <el-input v-model="userInfo.title" placeholder="如：教授、副教授" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="学院" prop="college">
+              <el-input v-model="userInfo.college" placeholder="请输入学院" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="userInfo.email" placeholder="请输入邮箱" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="电话" prop="phone">
+              <el-input v-model="userInfo.phone" placeholder="请输入电话" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-form-item label="研究方向" prop="research_field">
+          <el-input
+            v-model="userInfo.research_field"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入研究方向"
+          />
+        </el-form-item>
+        
+        <el-form-item>
+          <el-button type="primary" @click="handleSave" :loading="saving">保存信息</el-button>
+          <el-button @click="resetUserForm">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+
+    <!-- 修改密码卡片 -->
+    <el-card class="password-card">
+      <template #header>
+        <div class="card-header">
+          <span class="card-title">修改密码</span>
+        </div>
+      </template>
+      
+      <el-alert
+        title="密码要求"
+        type="info"
+        :closable="false"
+        class="password-tips"
+      >
+        <p style="margin: 5px 0">• 长度至少 8 位</p>
+        <p style="margin: 5px 0">• 必须包含大写字母、小写字母、数字和特殊字符</p>
+        <p style="margin: 5px 0">• 建议每 90 天更换一次密码</p>
+      </el-alert>
+      
+      <el-form
+        ref="passwordFormRef"
+        :model="passwordForm"
+        :rules="passwordRules"
+        label-width="100px"
+        class="password-form"
+      >
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="旧密码" prop="old_password">
+              <el-input
+                v-model="passwordForm.old_password"
+                type="password"
+                show-password
+                placeholder="请输入旧密码"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="新密码" prop="new_password">
+              <el-input
+                v-model="passwordForm.new_password"
+                type="password"
+                show-password
+                placeholder="请输入新密码"
+                @input="checkPasswordStrength"
+              />
+              <div v-if="passwordForm.new_password" class="password-strength">
+                <el-progress
+                  :percentage="passwordStrength.percentage"
+                  :color="passwordStrength.color"
+                  :format="() => passwordStrength.text"
+                />
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="确认密码" prop="confirm_password">
+              <el-input
+                v-model="passwordForm.confirm_password"
+                type="password"
+                show-password
+                placeholder="请再次输入新密码"
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-form-item>
+          <el-button type="primary" @click="handleChangePassword" :loading="changingPassword">
+            修改密码
+          </el-button>
+          <el-button @click="resetPasswordForm">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+  </div>
 </template>
 
 <script setup>
@@ -244,9 +293,11 @@ const getRoleType = (role) => {
 const loadUserInfo = async () => {
   try {
     const res = await getCurrentUser()
-    Object.assign(userInfo, res.data)
+    // 后端直接返回用户对象，不需要 .data
+    Object.assign(userInfo, res)
   } catch (error) {
-    ElMessage.error('加载用户信息失败')
+    console.error('加载用户信息失败:', error)
+    ElMessage.error(error.response?.data?.detail || '加载用户信息失败')
   }
 }
 
@@ -258,12 +309,23 @@ const handleSave = async () => {
     if (valid) {
       saving.value = true
       try {
-        await updateCurrentUser(userInfo)
+        // 只提交允许修改的字段，排除只读字段
+        const updateData = {
+          name: userInfo.name,
+          title: userInfo.title,
+          college: userInfo.college,
+          email: userInfo.email,
+          phone: userInfo.phone,
+          research_field: userInfo.research_field
+        }
+        
+        await updateCurrentUser(updateData)
         // 更新store中的用户信息
-        userStore.setUser(userInfo)
+        userStore.updateUser(userInfo)
         ElMessage.success('保存成功')
         await loadUserInfo()
       } catch (error) {
+        console.error('保存用户信息失败:', error)
         ElMessage.error(error.response?.data?.detail || '保存失败')
       } finally {
         saving.value = false
@@ -328,3 +390,57 @@ onMounted(() => {
   loadUserInfo()
 })
 </script>
+
+<style scoped>
+.profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.info-card {
+  margin-bottom: 20px;
+}
+
+.password-card {
+  margin-bottom: 20px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.user-form,
+.password-form {
+  padding: 20px 20px 0;
+}
+
+.password-tips {
+  margin-bottom: 24px;
+}
+
+.password-strength {
+  margin-top: 8px;
+}
+
+:deep(.el-form-item) {
+  margin-bottom: 22px;
+}
+
+:deep(.el-card__header) {
+  padding: 18px 20px;
+  border-bottom: 1px solid #ebeef5;
+  background-color: #fafafa;
+}
+
+:deep(.el-card__body) {
+  padding: 0;
+}
+</style>

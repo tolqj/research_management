@@ -51,24 +51,16 @@ const routes = [
         meta: { title: '成果管理', icon: 'TrophyBase' }
       },
       {
-        path: 'system',
-        name: 'System',
-        redirect: '/system/user',
-        meta: { title: '系统管理', icon: 'Setting' },
-        children: [
-          {
-            path: 'user',
-            name: 'UserManagement',
-            component: () => import('@/views/system/user.vue'),
-            meta: { title: '用户管理', requiresAdmin: true }
-          },
-          {
-            path: 'profile',
-            name: 'Profile',
-            component: () => import('@/views/system/profile.vue'),
-            meta: { title: '个人信息' }
-          }
-        ]
+        path: 'system/user',
+        name: 'UserManagement',
+        component: () => import('@/views/system/user.vue'),
+        meta: { title: '用户管理', icon: 'User', requiresAdmin: true }
+      },
+      {
+        path: 'system/profile',
+        name: 'Profile',
+        component: () => import('@/views/system/profile.vue'),
+        meta: { title: '个人信息', icon: 'UserFilled' }
       }
     ]
   }
