@@ -36,7 +36,10 @@ echo 后端地址: http://localhost:8000
 echo API文档: http://localhost:8000/api/docs
 echo 前端地址: http://localhost:5173
 echo.
-echo 默认账号: admin / admin123
+echo 默认账号:
+echo   管理员: admin / Admin@123
+echo   普通教师: teacher / Teacher@123
+echo   科研秘书: secretary / Sec@2024
 echo.
 echo 提示: 两个窗口将保持运行，关闭窗口即停止服务
 echo ========================================

@@ -135,19 +135,24 @@ start_all.bat
 
 ### 默认账号
 
-| 角色 | 用户名 | 密码 |
-|------|--------|------|
-| 管理员 | admin | Admin@123 |
-| 普通教师 | teacher | Teacher@123 |
-| 科研秘书 | secretary | Sec@2024 |
+| 角色 | 用户名 | 密码 | 权限说明 |
+|------|--------|------|----------|
+| 管理员 | admin | Admin@123 | 全部功能（用户管理、系统配置） |
+| 普通教师 | teacher | Teacher@123 | 管理自己的项目、论文、经费、成果 |
+| 科研秘书 | secretary | Sec@2024 | 查看和统计所有数据 |
+
+**⚠️ 重要提示**：首次登录后请立即修改默认密码！
 
 ## 📖 详细文档
 
-- [部署指南](docs/DEPLOYMENT.md) - 完整的部署步骤说明
-- [数据库设计](docs/DATABASE.md) - 数据库表结构和字段说明
-- [API文档](http://localhost:8000/api/docs) - 在线Swagger文档
-- [开发指南](docs/DEVELOPMENT.md) - 开发环境配置和规范
-- [安全规范](docs/SECURITY.md) - 等保二级安全特性说明
+| 文档 | 说明 |
+|------|------|
+| [快速开始](docs/快速开始.md) | 5分钟快速部署指南 |
+| [部署指南](docs/部署指南.md) | Windows/Linux/Docker完整部署 |
+| [数据库设计](docs/数据库设计.md) | 6张核心表的完整设计说明 |
+| [开发指南](docs/开发指南.md) | 二次开发、API开发规范 |
+| [安全规范](docs/安全规范.md) | 等保二级安全实现细节 |
+| [API文档](http://localhost:8000/api/docs) | 在线Swagger文档（需启动后端） |
 
 ## 🔐 安全特性（等保二级）
 
@@ -243,31 +248,72 @@ proxy: {
 
 ## 🐛 常见问题
 
-### 1. MySQL连接失败
+### 1. 数据库连接失败
 
-**问题**: `Can't connect to MySQL server`
+**现象**: `Can't connect to MySQL server`
 
 **解决方案**:
-- 确认MySQL服务已启动
-- 检查数据库连接配置是否正确
-- 确认数据库已创建
+```bash
+# 1. 检查MySQL服务状态
+net start MySQL80  # Windows
+sudo systemctl status mysql  # Linux
+
+# 2. 检查数据库配置（backend/database.py）
+# 确保用户名、密码、数据库名正确
+
+# 3. 测试连接
+mysql -u root -p research_management_system
+```
 
 ### 2. 端口被占用
 
-**问题**: `Address already in use`
+**现象**: `Address already in use: 8000`
 
 **解决方案**:
-- 后端：修改 `main.py` 中的端口号
-- 前端：修改 `vite.config.js` 中的端口号
+```bash
+# Windows
+netstat -ano | findstr "8000"
+taskkill /F /PID <进程ID>
 
-### 3. 前端无法访问后端
+# Linux
+lsof -i :8000
+kill -9 <PID>
+```
 
-**问题**: `Network Error`
+### 3. 依赖安装失败
+
+**现象**: `pip install` 或 `npm install` 超时
 
 **解决方案**:
-- 确认后端服务已启动(http://localhost:8000)
-- 检查 CORS 配置
-- 检查防火墙设置
+```bash
+# Python使用国内镜像
+pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# Node.js使用国内镜像
+npm config set registry https://registry.npmmirror.com
+npm install
+```
+
+### 4. 前端白屏
+
+**现象**: 页面空白或显示错误
+
+**解决方案**:
+1. 确认后端已启动（访问 http://localhost:8000/api/health）
+2. 检查浏览器控制台错误（F12）
+3. 清除浏览器缓存，强制刷新（Ctrl+Shift+R）
+4. 检查Token是否过期，重新登录
+
+### 5. 密码不符合要求
+
+**现象**: 提示密码强度不足
+
+**说明**: 系统符合等保二级标准，密码必须满足：
+- 至少8位
+- 包含大写字母、小写字母、数字、特殊字符
+- 示例：`Admin@123`、`Teacher@123`
+
+**更多问题**：请查看[完整FAQ文档](docs/快速开始.md#常见问题)
 
 ## 📊 系统截图
 
