@@ -1,0 +1,30 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/login/login",
+    "pages/projects/list",
+    "pages/projects/detail",
+    "pages/papers/list",
+    "pages/papers/detail",
+    "pages/funds/list",
+    "pages/funds/detail",
+    "pages/achievements/list",
+    "pages/achievements/detail",
+    "pages/statistics/index",
+    "pages/profile/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#409EFF",
+    "navigationBarTitleText": "科研管理系统",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F5F5F5"
+  },
+
+  "networkTimeout": {
+    "request": 30000,
+    "downloadFile": 30000
+  },
+  "debug": true,
+  "sitemapLocation": "sitemap.json"
+}

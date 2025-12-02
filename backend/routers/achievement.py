@@ -2,7 +2,7 @@
 成果管理路由（符合等保二级要求）
 包含完整的审计日志记录
 """
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from database import get_db
@@ -19,6 +19,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[schemas.AchievementResponse], summary="获取成果列表")
 def get_achievements(
+    response: Response,
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=500),
     achievement_type: Optional[models.AchievementType] = None,
@@ -27,13 +28,16 @@ def get_achievements(
     db: Session = Depends(get_db)
 ):
     """获取成果列表，支持筛选"""
-    achievements = crud_achievement.get_achievements(
+    total, achievements = crud_achievement.get_achievements(
         db,
         skip=skip,
         limit=limit,
         achievement_type=achievement_type,
-        owner=owner
+        owner=owner,
+        return_total=True
     )
+    # 在响应头中返回总数
+    response.headers["X-Total-Count"] = str(total)
     return achievements
 
 

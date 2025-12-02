@@ -1,0 +1,34 @@
+<!--pages/statistics/index.wxml-->
+<view class="container">
+  <!-- 数据总览 -->
+  <view class="stats-card card">
+    <view class="card-title">数据总览</view>
+    
+    <view class="stat-row">
+      <view class="stat-item">
+        <view class="stat-value text-primary">{{overview.project_count || 0}}</view>
+        <view class="stat-label">在研项目</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value text-success">{{overview.paper_count || 0}}</view>
+        <view class="stat-label">发表论文</view>
+      </view>
+    </view>
+
+    <view class="stat-row">
+      <view class="stat-item">
+        <view class="stat-value text-warning">{{overview.achievement_count || 0}}</view>
+        <view class="stat-label">科研成果</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value text-danger">￥{{formatMoney(overview.total_expense)}}</view>
+        <view class="stat-label">经费支出</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载提示 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+</view>

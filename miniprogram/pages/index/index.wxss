@@ -1,0 +1,81 @@
+/* pages/index/index.wxss */
+
+.welcome-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #FFFFFF;
+  padding: 40rpx;
+}
+
+.welcome-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.welcome-subtitle {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+/* 数据统计卡片 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 40rpx 20rpx;
+}
+
+/* 快捷入口 */
+.quick-actions {
+  margin-bottom: 20rpx;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 0;
+}
+
+.action-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 12rpx;
+  background-color: #ECF5FF;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+}
+
+.action-text {
+  font-size: 24rpx;
+  color: #606266;
+}
+
+/* 最新项目 */
+.recent-projects {
+  margin-bottom: 20rpx;
+}
+
+.project-item {
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #EBEEF5;
+}
+
+.project-item:last-child {
+  border-bottom: none;
+}

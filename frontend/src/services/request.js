@@ -46,7 +46,13 @@ request.interceptors.request.use(
 // 响应拦截器
 request.interceptors.response.use(
   response => {
-    return response.data
+    // 为了向后兼容，保持返回data，但在data上附加headers属性
+    const data = response.data
+    // 如果是数组或对象，添加headers属性
+    if (typeof data === 'object' && data !== null) {
+      data.headers = response.headers
+    }
+    return data
   },
   error => {
     // 打印完整的错误信息

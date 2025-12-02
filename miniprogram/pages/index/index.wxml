@@ -1,0 +1,87 @@
+<!--pages/index/index.wxml-->
+<wxs module="moneyUtil">
+  var formatMoney = function(amount) {
+    if (!amount && amount !== 0) return '0.00'
+    return Number(amount).toFixed(2)
+  }
+  module.exports = {
+    formatMoney: formatMoney
+  }
+</wxs>
+
+<view class="container">
+  <!-- 欢迎卡片 -->
+  <view class="welcome-card">
+    <view class="welcome-title">欢迎，{{userInfo.real_name || '用户'}}</view>
+    <view class="welcome-subtitle">科研管理系统 - 领导端</view>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="stats-grid">
+    <view class="stat-card card" bindtap="goToProjects">
+      <view class="stat-value">{{overview.project_count}}</view>
+      <view class="stat-label">在研项目</view>
+    </view>
+    <view class="stat-card card" bindtap="goToPapers">
+      <view class="stat-value">{{overview.paper_count}}</view>
+      <view class="stat-label">发表论文</view>
+    </view>
+    <view class="stat-card card" bindtap="goToAchievements">
+      <view class="stat-value">{{overview.achievement_count}}</view>
+      <view class="stat-label">科研成果</view>
+    </view>
+    <view class="stat-card card" bindtap="goToFunds">
+      <view class="stat-value">¥{{moneyUtil.formatMoney(overview.total_expense)}}</view>
+      <view class="stat-label">经费支出</view>
+    </view>
+  </view>
+
+  <!-- 快捷入口 -->
+  <view class="quick-actions card">
+    <view class="card-title">快捷入口</view>
+    <view class="action-grid">
+      <view class="action-item" bindtap="goToProjects">
+        <view class="action-icon">📋</view>
+        <view class="action-text">项目管理</view>
+      </view>
+      <view class="action-item" bindtap="goToPapers">
+        <view class="action-icon">📄</view>
+        <view class="action-text">论文管理</view>
+      </view>
+      <view class="action-item" bindtap="goToFunds">
+        <view class="action-icon">💰</view>
+        <view class="action-text">经费管理</view>
+      </view>
+      <view class="action-item" bindtap="goToAchievements">
+        <view class="action-icon">🏆</view>
+        <view class="action-text">成果管理</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最新项目 -->
+  <view class="recent-projects card" wx:if="{{projects.length > 0}}">
+    <view class="card-title">最新项目</view>
+    <view 
+      wx:for="{{projects}}" 
+      wx:key="id"
+      class="project-item"
+      bindtap="goToProjectDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="list-item-title">{{item.project_name}}</view>
+      <view class="list-item-desc">
+        <text>负责人：{{item.pi_name}}</text>
+        <text class="ml-10">预算：¥{{moneyUtil.formatMoney(item.budget_total)}}</text>
+      </view>
+      <view class="mt-10">
+        <text class="tag tag-{{getStatusType(item.status)}}">{{item.status}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载提示 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+</view>

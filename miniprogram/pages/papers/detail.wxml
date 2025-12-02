@@ -1,0 +1,86 @@
+<!--pages/papers/detail.wxml-->
+<wxs module="dateUtil">
+  var formatDate = function(date) {
+    if (!date) return ''
+    if (typeof date === 'string' && date.length >= 10) {
+      return date.substring(0, 10)
+    }
+    return date
+  }
+  module.exports = {
+    formatDate: formatDate
+  }
+</wxs>
+
+<view class="container">
+  <!-- 论文头部信息 -->
+  <view class="header-card card">
+    <view class="paper-title">{{paper.title || '加载中...'}}</view>
+    <view class="paper-authors">{{paper.authors}}</view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="info-card card">
+    <view class="card-title">基本信息</view>
+    
+    <view class="info-item">
+      <view class="info-label">论文标题</view>
+      <view class="info-value">{{paper.title}}</view>
+    </view>
+    
+    <view class="info-item">
+      <view class="info-label">作者</view>
+      <view class="info-value">{{paper.authors}}</view>
+    </view>
+    
+    <view class="info-item">
+      <view class="info-label">期刊</view>
+      <view class="info-value">{{paper.journal}}</view>
+    </view>
+    
+    <view class="info-item">
+      <view class="info-label">发表日期</view>
+      <view class="info-value">{{dateUtil.formatDate(paper.publication_date)}}</view>
+    </view>
+    
+    <view class="info-item" wx:if="{{paper.doi}}">
+      <view class="info-label">DOI</view>
+      <view class="info-value">{{paper.doi}}</view>
+    </view>
+  </view>
+
+  <!-- 分区信息 -->
+  <view class="info-card card" wx:if="{{paper.jcr_zone || paper.cas_zone}}">
+    <view class="card-title">分区信息</view>
+    
+    <view class="info-item" wx:if="{{paper.jcr_zone}}">
+      <view class="info-label">JCR分区</view>
+      <view class="info-value">
+        <text class="tag tag-warning">JCR {{paper.jcr_zone}}</text>
+      </view>
+    </view>
+    
+    <view class="info-item" wx:if="{{paper.cas_zone}}">
+      <view class="info-label">中科院分区</view>
+      <view class="info-value">
+        <text class="tag tag-primary">CAS {{paper.cas_zone}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 关联项目 -->
+  <view class="info-card card" wx:if="{{paper.project}}">
+    <view class="card-title">关联项目</view>
+    <view class="project-info">
+      <view class="project-name">{{paper.project.project_name}}</view>
+      <view class="project-meta">
+        <text>负责人：{{paper.project.pi_name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载提示 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+</view>

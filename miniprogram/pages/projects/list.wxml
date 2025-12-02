@@ -1,0 +1,64 @@
+<!--pages/projects/list.wxml-->
+<wxs module="moneyUtil">
+  var formatMoney = function(amount) {
+    if (!amount && amount !== 0) return '0.00'
+    return Number(amount).toFixed(2)
+  }
+  module.exports = {
+    formatMoney: formatMoney
+  }
+</wxs>
+
+<view class="container">
+  <!-- 状态筛选 -->
+  <view class="filter-bar">
+    <scroll-view scroll-x class="status-scroll">
+      <view class="status-list">
+        <view 
+          wx:for="{{statusList}}" 
+          wx:key="index"
+          class="status-item {{activeStatus === index ? 'active' : ''}}"
+          data-index="{{index}}"
+          bindtap="onStatusChange"
+        >
+          {{item}}
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 项目列表 -->
+  <view class="project-list">
+    <view 
+      wx:for="{{projects}}" 
+      wx:key="id"
+      class="list-item"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="list-item-title">{{item.project_name}}</view>
+      <view class="list-item-desc">
+        <text>负责人：{{item.pi_name}}</text>
+        <text class="ml-10">预算：¥{{moneyUtil.formatMoney(item.budget_total)}}</text>
+      </view>
+      <view class="mt-10">
+        <text class="tag tag-{{getStatusType(item.status)}}">{{item.status}}</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{projects.length === 0 && !loading}}" class="empty">
+      <text class="empty-text">暂无项目数据</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view wx:if="{{loading}}" class="loading">
+      <text>加载中...</text>
+    </view>
+
+    <!-- 没有更多 -->
+    <view wx:if="{{finished && projects.length > 0}}" class="loading">
+      <text>没有更多了</text>
+    </view>
+  </view>
+</view>

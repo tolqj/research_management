@@ -1,0 +1,37 @@
+/* achievements/list.wxss */
+
+.list-container {
+  padding: 20rpx;
+}
+
+.list-item {
+  margin-bottom: 20rpx;
+  padding: 30rpx;
+}
+
+.list-item-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #303133;
+  margin-bottom: 20rpx;
+  line-height: 1.6;
+}
+
+.list-item-desc {
+  font-size: 28rpx;
+  color: #606266;
+  margin-bottom: 16rpx;
+  display: flex;
+  align-items: center;
+  line-height: 1.5;
+}
+
+.list-item-desc:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  color: #909399;
+  font-weight: 500;
+  flex-shrink: 0;
+}

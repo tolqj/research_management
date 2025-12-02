@@ -1,0 +1,76 @@
+<!--pages/achievements/detail.wxml-->
+<wxs module="dateUtil">
+  var formatDate = function(date) {
+    if (!date) return ''
+    // 如果已经是 YYYY-MM-DD 格式，直接返回
+    if (typeof date === 'string' && date.length >= 10) {
+      return date.substring(0, 10)
+    }
+    return date
+  }
+  module.exports = {
+    formatDate: formatDate
+  }
+</wxs>
+
+<view class="container">
+  <!-- 成果头部信息 -->
+  <view class="header-card card">
+    <view class="achievement-title">{{achievement.title || '加载中...'}}</view>
+    <view class="achievement-meta">
+      <text class="achievement-type">{{achievement.achievement_type}}</text>
+    </view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="info-card card">
+    <view class="card-title">基本信息</view>
+    
+    <view class="info-item">
+      <view class="info-label">成果名称</view>
+      <view class="info-value">{{achievement.title}}</view>
+    </view>
+    
+    <view class="info-item">
+      <view class="info-label">成果类型</view>
+      <view class="info-value">{{achievement.achievement_type}}</view>
+    </view>
+    
+    <view class="info-item">
+      <view class="info-label">所有人</view>
+      <view class="info-value">{{achievement.owner}}</view>
+    </view>
+    
+    <view class="info-item">
+      <view class="info-label">完成日期</view>
+      <view class="info-value">{{dateUtil.formatDate(achievement.completion_date)}}</view>
+    </view>
+    
+    <view class="info-item" wx:if="{{achievement.members}}">
+      <view class="info-label">参与成员</view>
+      <view class="info-value">{{achievement.members}}</view>
+    </view>
+  </view>
+
+  <!-- 成果描述 -->
+  <view class="info-card card" wx:if="{{achievement.description}}">
+    <view class="card-title">成果描述</view>
+    <view class="description">{{achievement.description}}</view>
+  </view>
+
+  <!-- 关联项目 -->
+  <view class="info-card card" wx:if="{{achievement.project}}">
+    <view class="card-title">关联项目</view>
+    <view class="project-info">
+      <view class="project-name">{{achievement.project.project_name}}</view>
+      <view class="project-meta">
+        <text>负责人：{{achievement.project.pi_name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载提示 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+</view>

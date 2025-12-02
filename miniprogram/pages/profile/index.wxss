@@ -1,0 +1,75 @@
+/* pages/profile/index.wxss */
+
+.profile-card {
+  text-align: center;
+  padding: 60rpx 40rpx;
+  margin-bottom: 20rpx;
+}
+
+.profile-avatar {
+  font-size: 120rpx;
+  margin-bottom: 20rpx;
+}
+
+.profile-name {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #303133;
+  margin-bottom: 12rpx;
+}
+
+.profile-role {
+  font-size: 28rpx;
+  color: #909399;
+}
+
+.info-card {
+  margin-bottom: 20rpx;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #EBEEF5;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #606266;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #303133;
+}
+
+.menu-card {
+  margin-bottom: 20rpx;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #EBEEF5;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-label {
+  font-size: 30rpx;
+  color: #303133;
+}
+
+.menu-arrow {
+  font-size: 28rpx;
+  color: #C0C4CC;
+}

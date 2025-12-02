@@ -48,6 +48,17 @@
       </el-table-column>
     </el-table>
 
+    <el-pagination
+      v-model:current-page="pagination.page"
+      v-model:page-size="pagination.size"
+      :total="pagination.total"
+      :page-sizes="[10, 20, 50, 100]"
+      layout="total, sizes, prev, pager, next, jumper"
+      @size-change="loadAchievements"
+      @current-change="loadAchievements"
+      style="margin-top: 20px"
+    />
+
     <!-- 新增/编辑对话框 -->
     <el-dialog
       v-model="dialogVisible"
@@ -107,11 +118,11 @@ const dialogVisible = ref(false)
 const formRef = ref(null)
 
 const queryParams = reactive({
-  skip: 0,
-  limit: 100,
   achievement_type: '',
   owner: ''
 })
+
+const pagination = reactive({ page: 1, size: 20, total: 0 })
 
 const form = reactive({
   id: null,
@@ -156,7 +167,11 @@ const getTypeLabel = (type) => {
 const loadAchievements = async () => {
   loading.value = true
   try {
-    const params = { ...queryParams }
+    const params = {
+      skip: (pagination.page - 1) * pagination.size,
+      limit: pagination.size,
+      ...queryParams
+    }
     if (!params.achievement_type) delete params.achievement_type
     if (!params.owner) delete params.owner
     
@@ -164,6 +179,10 @@ const loadAchievements = async () => {
     // 确保返回的是数组
     if (Array.isArray(res)) {
       achievements.value = res
+    } else if (res.data && Array.isArray(res.data)) {
+      achievements.value = res.data
+      // 从响应头中获取总数
+      pagination.total = parseInt(res.headers?.['x-total-count'] || 0)
     } else {
       console.error('成果数据格式错误:', res)
       achievements.value = []

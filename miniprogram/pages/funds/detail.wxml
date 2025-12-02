@@ -1,0 +1,83 @@
+<!--pages/funds/detail.wxml-->
+<wxs module="moneyUtil">
+  var formatMoney = function(amount) {
+    if (!amount && amount !== 0) return '0.00'
+    return Number(amount).toFixed(2)
+  }
+  module.exports = {
+    formatMoney: formatMoney
+  }
+</wxs>
+
+<wxs module="dateUtil">
+  var formatDate = function(date) {
+    if (!date) return ''
+    if (typeof date === 'string' && date.length >= 10) {
+      return date.substring(0, 10)
+    }
+    return date
+  }
+  module.exports = {
+    formatDate: formatDate
+  }
+</wxs>
+
+<view class="container">
+  <!-- 经费头部信息 -->
+  <view class="header-card card">
+    <view class="fund-title">{{fund.expense_type || '加载中...'}}</view>
+    <view class="fund-amount">￥{{moneyUtil.formatMoney(fund.amount)}}</view>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="info-card card">
+    <view class="card-title">基本信息</view>
+    
+    <view class="info-item">
+      <view class="info-label">费用类型</view>
+      <view class="info-value">{{fund.expense_type}}</view>
+    </view>
+    
+    <view class="info-item">
+      <view class="info-label">金额</view>
+      <view class="info-value text-primary">￥{{moneyUtil.formatMoney(fund.amount)}}</view>
+    </view>
+    
+    <view class="info-item">
+      <view class="info-label">经办人</view>
+      <view class="info-value">{{fund.handler}}</view>
+    </view>
+    
+    <view class="info-item">
+      <view class="info-label">支出日期</view>
+      <view class="info-value">{{dateUtil.formatDate(fund.expense_date)}}</view>
+    </view>
+    
+    <view class="info-item" wx:if="{{fund.project_name}}">
+      <view class="info-label">关联项目</view>
+      <view class="info-value">{{fund.project_name}}</view>
+    </view>
+  </view>
+
+  <!-- 备注信息 -->
+  <view class="info-card card" wx:if="{{fund.remark}}">
+    <view class="card-title">备注信息</view>
+    <view class="remark">{{fund.remark}}</view>
+  </view>
+
+  <!-- 关联项目 -->
+  <view class="info-card card" wx:if="{{fund.project}}">
+    <view class="card-title">关联项目</view>
+    <view class="project-info">
+      <view class="project-name">{{fund.project.project_name}}</view>
+      <view class="project-meta">
+        <text>负责人：{{fund.project.pi_name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载提示 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+</view>

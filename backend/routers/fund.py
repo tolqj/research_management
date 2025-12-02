@@ -2,7 +2,7 @@
 经费管理路由（符合等保二级要求）
 包含完整的审计日志记录
 """
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from database import get_db
@@ -17,6 +17,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[schemas.FundResponse], summary="获取经费列表")
 def get_funds(
+    response: Response,
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=500),
     project_id: Optional[int] = None,
@@ -25,13 +26,16 @@ def get_funds(
     db: Session = Depends(get_db)
 ):
     """获取经费列表，支持筛选"""
-    funds = crud_fund.get_funds(
+    total, funds = crud_fund.get_funds(
         db,
         skip=skip,
         limit=limit,
         project_id=project_id,
-        expense_type=expense_type
+        expense_type=expense_type,
+        return_total=True
     )
+    # 在响应头中返回总数
+    response.headers["X-Total-Count"] = str(total)
     return funds
 
 

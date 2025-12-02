@@ -17,8 +17,9 @@ def get_achievements(
     skip: int = 0,
     limit: int = 100,
     achievement_type: Optional[models.AchievementType] = None,
-    owner: Optional[str] = None
-) -> List[models.Achievement]:
+    owner: Optional[str] = None,
+    return_total: bool = False
+):
     """获取成果列表"""
     query = db.query(models.Achievement)
     
@@ -26,6 +27,11 @@ def get_achievements(
         query = query.filter(models.Achievement.achievement_type == achievement_type)
     if owner:
         query = query.filter(models.Achievement.owner.like(f"%{owner}%"))
+    
+    if return_total:
+        total = query.count()
+        items = query.order_by(models.Achievement.completion_date.desc()).offset(skip).limit(limit).all()
+        return total, items
     
     return query.order_by(models.Achievement.completion_date.desc()).offset(skip).limit(limit).all()
 

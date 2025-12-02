@@ -1,0 +1,85 @@
+/* pages/achievements/detail.wxss */
+
+/* 成果头部 */
+.header-card {
+  margin-bottom: 20rpx;
+  padding: 40rpx;
+}
+
+.achievement-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #303133;
+  margin-bottom: 20rpx;
+  line-height: 1.5;
+}
+
+.achievement-meta {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.achievement-type {
+  font-size: 26rpx;
+  color: #409EFF;
+  background-color: #ECF5FF;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+/* 信息卡片 */
+.info-card {
+  margin-bottom: 20rpx;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #EBEEF5;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #606266;
+  flex-shrink: 0;
+  width: 180rpx;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #303133;
+  flex: 1;
+  text-align: right;
+  word-break: break-all;
+}
+
+.description {
+  font-size: 28rpx;
+  color: #606266;
+  line-height: 1.8;
+  text-indent: 2em;
+}
+
+/* 关联项目 */
+.project-info {
+  padding: 24rpx 0;
+}
+
+.project-name {
+  font-size: 30rpx;
+  color: #303133;
+  margin-bottom: 12rpx;
+  font-weight: 500;
+}
+
+.project-meta {
+  font-size: 26rpx;
+  color: #909399;
+}

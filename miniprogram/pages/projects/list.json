@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "项目列表",
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#F5F5F5",
+  "onReachBottomDistance": 50
+}

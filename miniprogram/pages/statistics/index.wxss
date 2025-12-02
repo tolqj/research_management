@@ -1,0 +1,32 @@
+/* pages/statistics/index.wxss */
+
+.stats-card {
+  margin-bottom: 20rpx;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-around;
+  padding: 40rpx 0;
+  border-bottom: 1rpx solid #EBEEF5;
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-bottom: 12rpx;
+}
+
+.stat-label {
+  font-size: 26rpx;
+  color: #909399;
+}

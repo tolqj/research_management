@@ -17,8 +17,9 @@ def get_funds(
     skip: int = 0,
     limit: int = 100,
     project_id: Optional[int] = None,
-    expense_type: Optional[str] = None
-) -> List[models.Fund]:
+    expense_type: Optional[str] = None,
+    return_total: bool = False
+):
     """获取经费列表"""
     query = db.query(models.Fund)
     
@@ -26,6 +27,11 @@ def get_funds(
         query = query.filter(models.Fund.project_id == project_id)
     if expense_type:
         query = query.filter(models.Fund.expense_type == expense_type)
+    
+    if return_total:
+        total = query.count()
+        items = query.order_by(models.Fund.expense_date.desc()).offset(skip).limit(limit).all()
+        return total, items
     
     return query.order_by(models.Fund.expense_date.desc()).offset(skip).limit(limit).all()
 

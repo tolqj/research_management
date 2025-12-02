@@ -1,0 +1,77 @@
+/* pages/funds/detail.wxss */
+
+/* 经费头部 */
+.header-card {
+  margin-bottom: 20rpx;
+  padding: 40rpx;
+  text-align: center;
+}
+
+.fund-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #303133;
+  margin-bottom: 20rpx;
+}
+
+.fund-amount {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #409EFF;
+}
+
+/* 信息卡片 */
+.info-card {
+  margin-bottom: 20rpx;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #EBEEF5;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #606266;
+  flex-shrink: 0;
+  width: 180rpx;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #303133;
+  flex: 1;
+  text-align: right;
+  word-break: break-all;
+}
+
+.remark {
+  font-size: 28rpx;
+  color: #606266;
+  line-height: 1.8;
+  text-indent: 2em;
+}
+
+/* 关联项目 */
+.project-info {
+  padding: 24rpx 0;
+}
+
+.project-name {
+  font-size: 30rpx;
+  color: #303133;
+  margin-bottom: 12rpx;
+  font-weight: 500;
+}
+
+.project-meta {
+  font-size: 26rpx;
+  color: #909399;
+}

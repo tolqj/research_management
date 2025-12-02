@@ -1,0 +1,64 @@
+<!--pages/funds/list.wxml-->
+<wxs module="moneyUtil">
+  var formatMoney = function(amount) {
+    if (!amount && amount !== 0) return '0.00'
+    return Number(amount).toFixed(2)
+  }
+  module.exports = {
+    formatMoney: formatMoney
+  }
+</wxs>
+
+<wxs module="dateUtil">
+  var formatDate = function(date) {
+    if (!date) return ''
+    if (typeof date === 'string' && date.length >= 10) {
+      return date.substring(0, 10)
+    }
+    return date
+  }
+  module.exports = {
+    formatDate: formatDate
+  }
+</wxs>
+
+<view class="container">
+  <!-- 经费列表 -->
+  <view class="list-container">
+    <view 
+      wx:for="{{funds}}" 
+      wx:key="id"
+      class="list-item card"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="list-item-title">
+        {{item.expense_type}} - ￥{{moneyUtil.formatMoney(item.amount)}}
+      </view>
+      <view class="list-item-desc">
+        <text>经办人：{{item.handler}}</text>
+      </view>
+      <view class="list-item-desc">
+        <text class="text-muted">日期：{{dateUtil.formatDate(item.expense_date)}}</text>
+      </view>
+      <view class="list-item-desc" wx:if="{{item.remark}}">
+        <text class="text-muted">备注：{{item.remark}}</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{funds.length === 0 && !loading}}" class="empty">
+      <text class="empty-text">暂无经费数据</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view wx:if="{{loading}}" class="loading">
+      <text>加载中...</text>
+    </view>
+
+    <!-- 没有更多 -->
+    <view wx:if="{{finished && funds.length > 0}}" class="loading">
+      <text>没有更多了</text>
+    </view>
+  </view>
+</view>

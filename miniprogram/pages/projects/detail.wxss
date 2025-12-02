@@ -1,0 +1,157 @@
+/* pages/projects/detail.wxss */
+
+/* 项目头部 */
+.header-card {
+  margin-bottom: 20rpx;
+  padding: 40rpx;
+}
+
+.project-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #303133;
+  margin-bottom: 20rpx;
+  line-height: 1.5;
+}
+
+.project-meta {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.project-code {
+  font-size: 24rpx;
+  color: #909399;
+}
+
+/* Tab选项卡 */
+.tab-bar {
+  display: flex;
+  margin-bottom: 20rpx;
+  padding: 0;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 28rpx 0;
+  font-size: 28rpx;
+  color: #606266;
+  border-bottom: 4rpx solid transparent;
+  transition: all 0.3s;
+}
+
+.tab-item.active {
+  color: #409EFF;
+  border-bottom-color: #409EFF;
+  font-weight: bold;
+}
+
+/* 信息卡片 */
+.info-card {
+  margin-bottom: 20rpx;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #EBEEF5;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #606266;
+  flex-shrink: 0;
+  width: 180rpx;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #303133;
+  flex: 1;
+  text-align: right;
+  word-break: break-all;
+}
+
+.description {
+  font-size: 28rpx;
+  color: #606266;
+  line-height: 1.8;
+  text-indent: 2em;
+}
+
+/* 项目成员 */
+.members-card {
+  margin-bottom: 20rpx;
+}
+
+.member-item {
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #EBEEF5;
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+.member-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.member-name {
+  font-size: 30rpx;
+  color: #303133;
+  font-weight: 500;
+}
+
+.member-role {
+  font-size: 26rpx;
+  color: #409EFF;
+}
+
+.member-contribution {
+  font-size: 24rpx;
+  color: #909399;
+}
+
+/* 项目成果 */
+.result-card {
+  margin-bottom: 20rpx;
+}
+
+.result-item {
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #EBEEF5;
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-title {
+  font-size: 28rpx;
+  color: #303133;
+  margin-bottom: 12rpx;
+  line-height: 1.5;
+}
+
+.result-desc {
+  font-size: 24rpx;
+  color: #606266;
+  margin-bottom: 8rpx;
+}
+
+.result-date {
+  font-size: 24rpx;
+  color: #909399;
+}

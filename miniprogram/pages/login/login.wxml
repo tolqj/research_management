@@ -1,0 +1,63 @@
+<!--pages/login/login.wxml-->
+<view class="login-container">
+  <!-- 标题 -->
+  <view class="login-header">
+    <view class="logo">📊</view>
+    <view class="title">科研管理系统</view>
+    <view class="subtitle">领导端小程序</view>
+  </view>
+
+  <!-- 登录表单 -->
+  <view class="login-form">
+    <view class="form-item">
+      <view class="label">用户名</view>
+      <input 
+        class="input" 
+        placeholder="请输入用户名" 
+        value="{{username}}"
+        bindinput="onUsernameInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="label">密码</view>
+      <input 
+        class="input" 
+        type="password"
+        placeholder="请输入密码" 
+        value="{{password}}"
+        bindinput="onPasswordInput"
+      />
+    </view>
+
+    <button 
+      class="login-btn" 
+      type="primary" 
+      loading="{{loading}}"
+      bindtap="handleLogin"
+    >
+      登录
+    </button>
+  </view>
+
+  <!-- 快速登录（测试用） -->
+  <view class="quick-login">
+    <view class="quick-title">快速登录（测试）</view>
+    <view class="quick-btns">
+      <button class="quick-btn" size="mini" data-role="admin" bindtap="quickLogin">
+        管理员
+      </button>
+      <button class="quick-btn" size="mini" data-role="secretary" bindtap="quickLogin">
+        科研秘书
+      </button>
+      <button class="quick-btn" size="mini" data-role="teacher" bindtap="quickLogin">
+        普通教师
+      </button>
+    </view>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="login-footer">
+    <text class="hint">首次登录后请修改密码</text>
+  </view>
+</view>

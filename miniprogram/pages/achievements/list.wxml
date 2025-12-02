@@ -1,0 +1,63 @@
+<!--pages/achievements/list.wxml-->
+<wxs module="dateUtil">
+  var formatDate = function(date) {
+    if (!date) return ''
+    // 如果已经是 YYYY-MM-DD 格式，直接返回
+    if (typeof date === 'string' && date.length >= 10) {
+      return date.substring(0, 10)
+    }
+    return date
+  }
+  module.exports = {
+    formatDate: formatDate
+  }
+</wxs>
+
+<view class="container">
+  <!-- 成果列表 -->
+  <view class="list-container">
+    <view 
+      wx:for="{{achievements}}" 
+      wx:key="id"
+      class="list-item card"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <!-- 成果名称 -->
+      <view class="list-item-title">{{item.title}}</view>
+      
+      <!-- 成果类型 -->
+      <view class="list-item-desc">
+        <text class="label">类型：</text>
+        <text>{{item.achievement_type}}</text>
+      </view>
+      
+      <!-- 成果所有人 -->
+      <view class="list-item-desc">
+        <text class="label">所有人：</text>
+        <text>{{item.owner}}</text>
+      </view>
+      
+      <!-- 成果日期 -->
+      <view class="list-item-desc">
+        <text class="label">完成日期：</text>
+        <text class="text-muted">{{dateUtil.formatDate(item.completion_date)}}</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{achievements.length === 0 && !loading}}" class="empty">
+      <text class="empty-text">暂无成果数据</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view wx:if="{{loading}}" class="loading">
+      <text>加载中...</text>
+    </view>
+
+    <!-- 没有更多 -->
+    <view wx:if="{{finished && achievements.length > 0}}" class="loading">
+      <text>没有更多了</text>
+    </view>
+  </view>
+</view>

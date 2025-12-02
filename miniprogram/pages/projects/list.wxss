@@ -1,0 +1,35 @@
+/* pages/projects/list.wxss */
+
+.filter-bar {
+  background-color: #FFFFFF;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.status-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.status-list {
+  display: inline-flex;
+}
+
+.status-item {
+  display: inline-block;
+  padding: 12rpx 24rpx;
+  margin-right: 20rpx;
+  background-color: #F5F7FA;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  color: #606266;
+}
+
+.status-item.active {
+  background-color: #409EFF;
+  color: #FFFFFF;
+}
+
+.project-list {
+  padding: 0 20rpx;
+}

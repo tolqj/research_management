@@ -23,6 +23,17 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <el-pagination
+        v-model:current-page="pagination.page"
+        v-model:page-size="pagination.size"
+        :total="pagination.total"
+        :page-sizes="[10, 20, 50, 100]"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="loadPapers"
+        @current-change="loadPapers"
+        style="margin-top: 20px"
+      />
     </el-card>
 
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="700px">
@@ -71,6 +82,7 @@ import { getPaperList, createPaper, updatePaper, deletePaper } from '@/services/
 const papers = ref([])
 const dialogVisible = ref(false)
 const dialogTitle = ref('新建论文')
+const pagination = reactive({ page: 1, size: 20, total: 0 })
 const form = reactive({
   id: null,
   title: '',
@@ -86,8 +98,16 @@ const form = reactive({
 
 const loadPapers = async () => {
   try {
-    const res = await getPaperList({ skip: 0, limit: 100 })
-    papers.value = res
+    const res = await getPaperList({ skip: (pagination.page - 1) * pagination.size, limit: pagination.size })
+    // 处理响应数据
+    if (Array.isArray(res)) {
+      papers.value = res
+      // 从响应头中获取总数
+      pagination.total = parseInt(res.headers?.['x-total-count'] || 0)
+    } else {
+      papers.value = []
+      pagination.total = 0
+    }
   } catch (error) {
     ElMessage.error('加载论文列表失败')
   }

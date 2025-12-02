@@ -2,7 +2,7 @@
 论文管理路由（符合等保二级要求）
 包含完整的审计日志记录
 """
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from database import get_db
@@ -19,6 +19,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[schemas.PaperResponse], summary="获取论文列表")
 def get_papers(
+    response: Response,
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=500),
     creator_id: Optional[int] = None,
@@ -30,7 +31,7 @@ def get_papers(
     db: Session = Depends(get_db)
 ):
     """获取论文列表，支持筛选"""
-    papers = crud_paper.get_papers(
+    total, papers = crud_paper.get_papers(
         db,
         skip=skip,
         limit=limit,
@@ -38,8 +39,11 @@ def get_papers(
         project_id=project_id,
         year=year,
         jcr_zone=jcr_zone,
-        cas_zone=cas_zone
+        cas_zone=cas_zone,
+        return_total=True
     )
+    # 在响应头中返回总数
+    response.headers["X-Total-Count"] = str(total)
     return papers
 
 

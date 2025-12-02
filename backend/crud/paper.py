@@ -20,8 +20,9 @@ def get_papers(
     project_id: Optional[int] = None,
     year: Optional[int] = None,
     jcr_zone: Optional[str] = None,
-    cas_zone: Optional[str] = None
-) -> List[models.Paper]:
+    cas_zone: Optional[str] = None,
+    return_total: bool = False
+):
     """获取论文列表"""
     query = db.query(models.Paper)
     
@@ -35,6 +36,11 @@ def get_papers(
         query = query.filter(models.Paper.jcr_zone == jcr_zone)
     if cas_zone:
         query = query.filter(models.Paper.cas_zone == cas_zone)
+    
+    if return_total:
+        total = query.count()
+        items = query.order_by(models.Paper.publication_date.desc()).offset(skip).limit(limit).all()
+        return total, items
     
     return query.order_by(models.Paper.publication_date.desc()).offset(skip).limit(limit).all()
 
