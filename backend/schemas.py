@@ -63,6 +63,7 @@ class LoginResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+    warning: Optional[str] = None  # 密码过期等安全警告
 
 
 # ==================== 项目相关 ====================
