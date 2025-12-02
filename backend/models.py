@@ -49,6 +49,14 @@ class User(Base):
     email = Column(String(100), unique=True, comment="邮箱")
     phone = Column(String(20), comment="电话")
     research_field = Column(String(200), comment="研究方向")
+    
+    # 安全相关字段（等保要求）
+    password_updated_at = Column(DateTime, server_default=func.now(), comment="密码最后修改时间")
+    login_failures = Column(Integer, default=0, comment="连续登录失败次数")
+    locked_until = Column(DateTime, nullable=True, comment="账号锁定截止时间")
+    last_login_at = Column(DateTime, nullable=True, comment="最后登录时间")
+    last_login_ip = Column(String(50), nullable=True, comment="最后登录IP")
+    
     created_at = Column(DateTime, server_default=func.now(), comment="创建时间")
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), comment="更新时间")
     
@@ -141,15 +149,21 @@ class Achievement(Base):
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), comment="更新时间")
 
 
-# 操作日志表
+# 操作日志表（符合等保二级要求）
 class OperationLog(Base):
     __tablename__ = "operation_logs"
     
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("users.id"), comment="用户ID")
     username = Column(String(50), comment="用户名")
-    operation = Column(String(100), comment="操作类型")
-    module = Column(String(50), comment="模块名称")
+    operation = Column(String(100), nullable=False, comment="操作类型")
+    module = Column(String(50), nullable=False, comment="模块名称")
+    method = Column(String(10), comment="HTTP方法")
+    path = Column(String(200), comment="请求路径")
     details = Column(Text, comment="操作详情")
-    ip_address = Column(String(50), comment="IP地址")
-    created_at = Column(DateTime, server_default=func.now(), comment="操作时间")
+    ip_address = Column(String(50), nullable=False, comment="IP地址")
+    user_agent = Column(String(500), comment="用户代理")
+    status = Column(String(20), comment="操作结果")
+    error_msg = Column(Text, comment="错误信息")
+    duration = Column(Integer, comment="执行时间(毫秒)")
+    created_at = Column(DateTime, server_default=func.now(), index=True, comment="操作时间")
