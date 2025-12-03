@@ -5,7 +5,7 @@ FastAPI 主应用入口
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
-from routers import auth, user, project, paper, fund, achievement, statistics
+from routers import auth, user, project, paper, fund, achievement, statistics, audit_log
 
 # 创建数据库表
 Base.metadata.create_all(bind=engine)
@@ -36,6 +36,7 @@ app.include_router(paper.router, prefix="/api/papers", tags=["论文管理"])
 app.include_router(fund.router, prefix="/api/funds", tags=["经费管理"])
 app.include_router(achievement.router, prefix="/api/achievements", tags=["成果管理"])
 app.include_router(statistics.router, prefix="/api/statistics", tags=["统计分析"])
+app.include_router(audit_log.router, prefix="/api/audit", tags=["安全审计"])
 
 
 @app.get("/")

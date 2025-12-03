@@ -23,6 +23,7 @@
       <el-form-item>
         <el-button type="primary" @click="loadAchievements">查询</el-button>
         <el-button @click="resetQuery">重置</el-button>
+        <el-button @click="handleExport">导出Excel</el-button>
       </el-form-item>
     </el-form>
 
@@ -111,6 +112,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '@/services/request'
+import { exportToExcel, formatDate } from '@/utils/export'
 
 const loading = ref(false)
 const achievements = ref([])
@@ -169,11 +171,16 @@ const loadAchievements = async () => {
   try {
     const params = {
       skip: (pagination.page - 1) * pagination.size,
-      limit: pagination.size,
-      ...queryParams
+      limit: pagination.size
     }
-    if (!params.achievement_type) delete params.achievement_type
-    if (!params.owner) delete params.owner
+    
+    // 只有当查询条件不为空时才添加
+    if (queryParams.achievement_type) {
+      params.achievement_type = queryParams.achievement_type
+    }
+    if (queryParams.owner) {
+      params.owner = queryParams.owner
+    }
     
     const res = await request.get('/achievements/', { params })
     // 确保返回的是数组
@@ -268,6 +275,42 @@ const resetForm = () => {
     description: ''
   })
   formRef.value?.resetFields()
+}
+
+// 导出功能
+const handleExport = () => {
+  if (achievements.value.length === 0) {
+    ElMessage.warning('没有可导出的数据')
+    return
+  }
+  
+  const columns = [
+    { label: 'ID', prop: 'id', width: 10 },
+    { 
+      label: '成果类型', 
+      prop: 'achievement_type', 
+      width: 15,
+      formatter: (value) => getTypeLabel(value)
+    },
+    { label: '成果名称', prop: 'title', width: 35 },
+    { label: '所有人', prop: 'owner', width: 15 },
+    { label: '参与人员', prop: 'members', width: 25 },
+    { 
+      label: '完成日期', 
+      prop: 'completion_date', 
+      width: 15,
+      formatter: (value) => formatDate(value)
+    },
+    { label: '证书编号', prop: 'certificate_no', width: 20 },
+    { label: '成果描述', prop: 'description', width: 40 }
+  ]
+  
+  const success = exportToExcel(achievements.value, columns, '成果管理数据')
+  if (success) {
+    ElMessage.success('导出成功！')
+  } else {
+    ElMessage.error('导出失败，请重试')
+  }
 }
 
 onMounted(() => {

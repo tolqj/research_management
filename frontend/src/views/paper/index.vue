@@ -4,7 +4,10 @@
       <template #header>
         <div class="card-header">
           <span>论文管理</span>
-          <el-button type="primary" @click="handleAdd">新建论文</el-button>
+          <div>
+            <el-button @click="handleExport">导出Excel</el-button>
+            <el-button type="primary" @click="handleAdd">新建论文</el-button>
+          </div>
         </div>
       </template>
 
@@ -78,6 +81,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getPaperList, createPaper, updatePaper, deletePaper } from '@/services/paper'
+import { exportToExcel, formatDate } from '@/utils/export'
 
 const papers = ref([])
 const dialogVisible = ref(false)
@@ -151,6 +155,38 @@ const handleDelete = (row) => {
       ElMessage.error('删除失败')
     }
   })
+}
+
+// 导出功能
+const handleExport = () => {
+  if (papers.value.length === 0) {
+    ElMessage.warning('没有可导出的数据')
+    return
+  }
+  
+  const columns = [
+    { label: 'ID', prop: 'id', width: 10 },
+    { label: '论文标题', prop: 'title', width: 40 },
+    { label: '作者', prop: 'authors', width: 20 },
+    { label: '期刊名称', prop: 'journal', width: 30 },
+    { 
+      label: '发表日期', 
+      prop: 'publication_date', 
+      width: 15,
+      formatter: (value) => formatDate(value)
+    },
+    { label: 'DOI', prop: 'doi', width: 25 },
+    { label: 'JCR分区', prop: 'jcr_zone', width: 12 },
+    { label: '中科院分区', prop: 'cas_zone', width: 15 },
+    { label: '影响因子', prop: 'impact_factor', width: 12 }
+  ]
+  
+  const success = exportToExcel(papers.value, columns, '论文管理数据')
+  if (success) {
+    ElMessage.success('导出成功！')
+  } else {
+    ElMessage.error('导出失败，请重试')
+  }
 }
 
 onMounted(() => {

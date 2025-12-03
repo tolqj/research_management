@@ -25,6 +25,7 @@
       <el-form-item>
         <el-button type="primary" @click="loadFunds">查询</el-button>
         <el-button @click="resetQuery">重置</el-button>
+        <el-button @click="handleExport">导出Excel</el-button>
       </el-form-item>
     </el-form>
 
@@ -124,6 +125,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '@/services/request'
+import { exportToExcel, formatDate, formatAmount } from '@/utils/export'
 
 const loading = ref(false)
 const funds = ref([])
@@ -187,11 +189,16 @@ const loadFunds = async () => {
   try {
     const params = {
       skip: (pagination.page - 1) * pagination.size,
-      limit: pagination.size,
-      ...queryParams
+      limit: pagination.size
     }
-    if (!params.project_id) delete params.project_id
-    if (!params.expense_type) delete params.expense_type
+    
+    // 只有当查询条件不为空时才添加
+    if (queryParams.project_id) {
+      params.project_id = queryParams.project_id
+    }
+    if (queryParams.expense_type) {
+      params.expense_type = queryParams.expense_type
+    }
     
     const res = await request.get('/funds/', { params })
     // 确保返回的是数组
@@ -285,6 +292,46 @@ const resetForm = () => {
     notes: ''
   })
   formRef.value?.resetFields()
+}
+
+// 导出功能
+const handleExport = () => {
+  if (funds.value.length === 0) {
+    ElMessage.warning('没有可导出的数据')
+    return
+  }
+  
+  const columns = [
+    { label: 'ID', prop: 'id', width: 10 },
+    { 
+      label: '项目名称', 
+      prop: 'project_id', 
+      width: 30,
+      formatter: (value) => getProjectName(value)
+    },
+    { label: '支出类型', prop: 'expense_type', width: 15 },
+    { 
+      label: '金额', 
+      prop: 'amount', 
+      width: 15,
+      formatter: (value) => formatAmount(value)
+    },
+    { 
+      label: '支出日期', 
+      prop: 'expense_date', 
+      width: 15,
+      formatter: (value) => formatDate(value)
+    },
+    { label: '经办人', prop: 'handler', width: 15 },
+    { label: '备注', prop: 'notes', width: 35 }
+  ]
+  
+  const success = exportToExcel(funds.value, columns, '经费管理数据')
+  if (success) {
+    ElMessage.success('导出成功！')
+  } else {
+    ElMessage.error('导出失败，请重试')
+  }
 }
 
 onMounted(() => {

@@ -22,17 +22,25 @@ def get_achievements(
     response: Response,
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=500),
-    achievement_type: Optional[models.AchievementType] = None,
+    achievement_type: Optional[str] = None,
     owner: Optional[str] = None,
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """获取成果列表，支持筛选"""
+    # 将字符串转换为枚举（如果提供）
+    achievement_type_enum = None
+    if achievement_type:
+        try:
+            achievement_type_enum = models.AchievementType[achievement_type]
+        except KeyError:
+            raise HTTPException(status_code=400, detail=f"无效的成果类型: {achievement_type}")
+    
     total, achievements = crud_achievement.get_achievements(
         db,
         skip=skip,
         limit=limit,
-        achievement_type=achievement_type,
+        achievement_type=achievement_type_enum,
         owner=owner,
         return_total=True
     )

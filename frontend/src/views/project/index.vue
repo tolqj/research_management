@@ -99,7 +99,8 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getProjectList, createProject, updateProject, deleteProject, exportProjects } from '@/services/project'
+import { getProjectList, createProject, updateProject, deleteProject } from '@/services/project'
+import { exportToExcel, formatDate, formatAmount } from '@/utils/export'
 
 const projects = ref([])
 const dialogVisible = ref(false)
@@ -172,7 +173,46 @@ const handleDelete = (row) => {
 }
 
 const handleExport = () => {
-  ElMessage.info('导出功能开发中...')
+  if (projects.value.length === 0) {
+    ElMessage.warning('没有可导出的数据')
+    return
+  }
+  
+  const columns = [
+    { label: 'ID', prop: 'id', width: 10 },
+    { label: '项目名称', prop: 'project_name', width: 30 },
+    { label: '负责人', prop: 'pi_name', width: 15 },
+    { label: '项目类型', prop: 'project_type', width: 20 },
+    { label: '项目来源', prop: 'source', width: 20 },
+    { 
+      label: '总预算', 
+      prop: 'budget_total', 
+      width: 15,
+      formatter: (value) => formatAmount(value)
+    },
+    { 
+      label: '开始日期', 
+      prop: 'start_date', 
+      width: 15,
+      formatter: (value) => formatDate(value)
+    },
+    { 
+      label: '结束日期', 
+      prop: 'end_date', 
+      width: 15,
+      formatter: (value) => formatDate(value)
+    },
+    { label: '项目状态', prop: 'status', width: 12 },
+    { label: '项目目标', prop: 'objectives', width: 35 },
+    { label: '项目描述', prop: 'description', width: 35 }
+  ]
+  
+  const success = exportToExcel(projects.value, columns, '项目管理数据')
+  if (success) {
+    ElMessage.success('导出成功！')
+  } else {
+    ElMessage.error('导出失败，请重试')
+  }
 }
 
 onMounted(() => {

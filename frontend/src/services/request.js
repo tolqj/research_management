@@ -69,10 +69,14 @@ request.interceptors.response.use(
       
       switch (status) {
         case 401:
-          ElMessage.error('登录已过期，请重新登录')
-          const userStore = useUserStore()
-          userStore.logout()
-          router.push('/login')
+          // 如果是登录接口返回401，不显示“登录已过期”提示
+          if (!error.config.url.includes('/auth/login')) {
+            ElMessage.error('登录已过期，请重新登录')
+            const userStore = useUserStore()
+            userStore.logout()
+            router.push('/login')
+          }
+          // 登录接口的401错误交给登录页面处理
           break
         case 403:
           ElMessage.error('权限不足')

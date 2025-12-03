@@ -77,15 +77,14 @@ const handleLogin = async () => {
     
     loading.value = true
     try {
-      const success = await userStore.login(loginForm.username, loginForm.password)
-      if (success) {
-        ElMessage.success('登录成功')
-        router.push('/')
-      } else {
-        ElMessage.error('登录失败')
-      }
+      await userStore.login(loginForm.username, loginForm.password)
+      ElMessage.success('登录成功')
+      router.push('/')
     } catch (error) {
-      ElMessage.error('登录失败，请重试')
+      // 显示详细的错误信息
+      const errorMsg = error.response?.data?.detail || '用户名或密码错误'
+      console.error('[Login Error]', error.response?.data)
+      ElMessage.error(errorMsg)
     } finally {
       loading.value = false
     }

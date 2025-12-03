@@ -79,7 +79,20 @@ const activeMenu = computed(() => route.path)
 // 菜单路由（过滤不显示的路由）
 const menuRoutes = computed(() => {
   const routes = router.options.routes.find(r => r.path === '/')?.children || []
-  return routes.filter(r => !r.meta?.hidden)
+  return routes.filter(r => {
+    // 过滤隐藏的路由
+    if (r.meta?.hidden) return false
+    
+    // 检查管理员权限
+    if (r.meta?.requiresAdmin && userStore.user?.role !== '管理员') return false
+    
+    // 检查科研秘书权限（管理员和科研秘书可见）
+    if (r.meta?.requiresSecretary && 
+        userStore.user?.role !== '管理员' && 
+        userStore.user?.role !== '科研秘书') return false
+    
+    return true
+  })
 })
 
 // 处理用户下拉菜单命令

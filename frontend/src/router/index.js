@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/store/user'
 
 const routes = [
@@ -57,6 +58,12 @@ const routes = [
         meta: { title: '用户管理', icon: 'User', requiresAdmin: true }
       },
       {
+        path: 'system/audit-log',
+        name: 'AuditLog',
+        component: () => import('@/views/system/audit-log.vue'),
+        meta: { title: '审计日志', icon: 'Document', requiresSecretary: true }
+      },
+      {
         path: 'system/profile',
         name: 'Profile',
         component: () => import('@/views/system/profile.vue'),
@@ -87,6 +94,15 @@ router.beforeEach((to, from, next) => {
   // 检查管理员权限
   if (to.meta.requiresAdmin && userStore.user?.role !== '管理员') {
     ElMessage.error('权限不足')
+    next(false)
+    return
+  }
+  
+  // 检查科研秘书权限（管理员和科研秘书可访问）
+  if (to.meta.requiresSecretary && 
+      userStore.user?.role !== '管理员' && 
+      userStore.user?.role !== '科研秘书') {
+    ElMessage.error('权限不足，需要管理员或科研秘书权限')
     next(false)
     return
   }

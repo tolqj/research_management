@@ -19,7 +19,9 @@ export const useUserStore = defineStore('user', () => {
       
       return true
     } catch (error) {
-      return false
+      // 将错误向上抛出，让调用者处理
+      console.error('登录失败:', error)
+      throw error
     }
   }
 
